@@ -1,0 +1,66 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+分析結果
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/additional.css"></link>
+
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topnavbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">mocho-recommend</a>
+        </div>
+        
+        <div class="collapse navbar-collapse" id="topnavbar">
+            <ul class="nav navbar-nav">
+                <li><a href="/#what">What</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#qanda">Q & A</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>mocho-recommend</h1>
+        <p><h3>6/25/2021<span style="color:#fff; background-color:#f99"> 麻倉ももさん </span> お誕生日おめでとうございます！</h3></p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="page-header">
+        <h1>分析結果</h1>
+    </div>
+    <div>
+        <p class="lead">あなたっぽい麻倉ももさんの曲は…</p>
+        <h2><span style="color:#fff; background-color:#f99">{{ title }}</span></h2>
+        <p class="lead">です！</p>
+    </div>
+    
+    <div>
+        <div>↓ 結果をツイートしよう！</div>
+        <a href="https://twitter.com/intent/tweet?text=あなたっぽい麻倉ももさんの曲は「{{ title }}」です！&hashtags=mocho_recommend" class="twitter-share-button" data-show-count="false" data-size="large">Tweet</a>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </div>
+    
+    <br>
+    <br>
+    
+    <p class="lead"><a href="/">戻る</a></p>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted">本サービスに関するお問い合わせは村犬 (<a href="https://twitter.com/mura_dog">@mura_dog</a>) まで.</p>
+    </div>
+</footer>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+mocho-recommend
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/additional.css"></link>
+
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topnavbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">mocho-recommend</a>
+        </div>
+        
+        <div class="collapse navbar-collapse" id="topnavbar">
+            <ul class="nav navbar-nav">
+                <li><a href="#what">What</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#qanda">Q & A</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>mocho-recommend</h1>
+        <p><h3>6/25/2021<span style="color:#fff; background-color:#f99"> 麻倉ももさん </span> お誕生日おめでとうございます！</h3></p>
+    </div>
+</div>
+
+<div class="container">
+    <div>
+        <p class="lead">あなたのツイートを取得・分析して, 麻倉ももさんの曲の中で歌詞がツイートと最も似ている曲を推薦します.</p>
+        <p>↓↓↓ 下のボタンからログインしてください. ↓↓↓</p>
+        <a href="{{ url_for('twitter_auth') }}"><img src="/static/images/sign-in-with-twitter-gray.png.twimg.1920.png" border=0></a>
+    </div>
+    
+    <div id="what">
+        <div class="page-header">
+            <h3>これは何？</h3>
+        </div>
+        
+        麻倉ももさんのお誕生日を記念して制作したサービスです.
+    </div>
+    
+    <div id="about">
+        <div class="page-header">
+            <h3>何するの？</h3>
+        </div>
+        
+        直近30件のツイート (リツイートを除く) を取得し, 使われた単語が最も似ている歌詞の曲を見つけます.
+    </div>
+    
+    <div id="qanda">
+        <div class="page-header">
+            <h3>Q & A</h3>
+        </div>
+        
+        <ul>
+            <li style="font-size:2rem">乗っ取りとかしない？</li>
+            本サービスが Twitter アカウントに対して行うことは, 「投稿ツイートを取得する」のみです.<br>
+            ツイートの分析後は, 連携したアカウントのデータ, 及び取得したツイートのデータを保持しません.
+            <li style="font-size:2rem">歌詞のデータは？</li>
+            <a href="https://www.uta-net.com/">歌詞検索サービス 歌ネット</a>に掲載されている歌詞を元に, 歌詞中に使用された単語を抽出したデータのみを使用しています.<br>
+            本サービスでは歌詞原文を保持していません.
+            <li style="font-size:2rem">どうやって計算しているの？</li>
+            取得したツイートを結合したものと歌詞のそれぞれに対して, 名詞・代名詞・動詞・形容詞・副詞・形容動詞を抽出し, 単語の集合を作ります.<br>
+            集合の類似度を Simpson 係数を用いて評価し, そのまま結果としています. さては手抜きだな？
+            <li style="font-size:2rem">結果が偏っていない？</li>
+            上記の仕様によるものです. 自然言語処理なにもわかってないので許してください.
+        </ul>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted">本サービスに関するお問い合わせは村犬 (<a href="https://twitter.com/mura_dog">@mura_dog</a>) まで.</p>
+    </div>
+</footer>
+{% endblock %}
