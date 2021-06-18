@@ -1,3 +1,4 @@
+import os
 import time
 from bs4 import BeautifulSoup
 import psycopg2
@@ -55,14 +56,9 @@ if __name__ == "__main__":
         lyrics_parsed = parse(lyrics)
         parsed_data.append((title, lyrics_parsed))
     
-    # for title, lyrics_parsed in parsed_data:
-        # print(title, lyrics_parsed)
-    # exit()
-    conn = psycopg2.connect("host=" + "localhost" +
-                            " dbname=" + "data" +
-                            " password=" + "hogefuga")
+    conn = psycopg2.connect(os.environ['DATABASE_URL'])
     cur = conn.cursor()
     for title, lyrics_parsed in parsed_data:
-        cur.execute(f"INSERT INTO data VALUES ('{title}', '{lyrics_parsed}')")
+        cur.execute(f"INSERT INTO data (title, lyrics) VALUES ('{title}', '{lyrics_parsed}')")
         conn.commit()
     

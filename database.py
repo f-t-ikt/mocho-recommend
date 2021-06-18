@@ -1,14 +1,15 @@
 import os
 import psycopg2
+from song import Song
 
 def read_data():
     database_url = os.environ['DATABASE_URL']
     conn = psycopg2.connect(database_url)
     cur = conn.cursor()
     cur.execute("SELECT * FROM data");
-    titles_list, lyrics_list = [], []
-    for title, lyrics_parsed in cur:
-        titles_list.append(title)
-        lyrics_list.append(lyrics_parsed)
+    data = []
+    for record in cur:
+        song = Song(*record)
+        data.append(song)
     
-    return titles_list, lyrics_list
+    return data

@@ -1,22 +1,35 @@
-from logging import getLogger
+from logging import getLogger, StreamHandler, DEBUG
 import os
-from flask import Flask, session, redirect, render_template, request
+from flask import Flask, session, redirect, render_template, request, url_for
 from flask_bootstrap import Bootstrap
 import tweepy
+from tweepy import TweepError
 from database import read_data
-from similarity import get_most_similar_title
+from similarity import get_terms_in_tweets, get_most_similar_title
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 app.secret_key = os.environ['FLASK_SECRET_KEY']
 
 logger = getLogger(__name__)
+handler = StreamHandler()
+handler.setLevel(DEBUG)
+logger.setLevel(DEBUG)
+logger.addHandler(handler)
+logger.propagate = False
 
 CONSUMER_KEY = os.environ['CONSUMER_KEY']
 CONSUMER_SECRET = os.environ['CONSUMER_SECRET']
 CALLBACK_URL = os.environ['CALLBACK_URL']
 
-titles_list, lyrics_list = read_data()
+songs_data = read_data()
+
+@app.before_request
+def delete_title_data():
+    if request.path == url_for('result') or request.path.startswith('/static/'):
+        return
+    session.pop('recommended_index', None)
+    session.pop('included_terms', None)
 
 @app.route('/')
 def index():
@@ -28,8 +41,8 @@ def twitter_auth():
         auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET, CALLBACK_URL)
         redirect_url = auth.get_authorization_url()
         session['request_token'] = auth.request_token
-    except tweepy.TweepError as e:
-        logger.exception(e)
+    except TweepError as e:
+        logger.exception('in twitter_auth')
         return redirect('/')
 
     return redirect(redirect_url)
@@ -39,30 +52,53 @@ def success_login():
     verifier = request.args.get('oauth_verifier')
     session['verifier'] = verifier
     return redirect('/result')
-
+    
 @app.route('/result', methods=['GET'])
 def result():
-    data = analyze()
-    if not data:
-        return redirect('/')
-    return render_template('result.html', title=data)
-
-def analyze():
+    if 'recommended_index' in session and 'included_terms' in session:
+        index = session['recommended_index']
+        recommended_song = songs_data[index]
+        included_terms = session['included_terms']
+        return render_template('result.html', url_root=request.url_root, song=recommended_song, included_terms=included_terms)
+    
     token = session.pop('request_token', None)
     verifier = session.pop('verifier', None)
     if token is None or verifier is None:
-        return False
+        return redirect('/')
     
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET, CALLBACK_URL)
     auth.request_token = token
     try:
         auth.get_access_token(verifier)
-    except tweepy.TweepError as e:
-        logger.exception(e)
-        return False
+    except TweepError as e:
+        logger.exception('in result, authorizing')
+        return redirect(url_for('error', msg='連携に失敗しました. 初めからやり直してください.'))
     
     api = tweepy.API(auth)
-    return get_most_similar_title(api, titles_list, lyrics_list)
+    
+    try:
+        terms_in_tweets = get_terms_in_tweets(api)
+    except TweepError as e:
+        logger.exception('in result, getting tweets')
+        return redirect(url_for('error', msg='ツイートの取得に失敗しました. 初めからやり直してください.'))
+    
+    if len(terms_in_tweets) == 0:
+        return redirect(url_for('error', msg='ツイートが不足しています.'))
+    
+    max_index = get_most_similar_title(api, terms_in_tweets, songs_data)
+    session['recommended_index'] = max_index
+    recommended_song = songs_data[max_index]
+    title = recommended_song.title
+    lyrics_set = set(recommended_song.lyrics.split())
+    intersection = terms_in_tweets & lyrics_set
+    session['included_terms'] = list(intersection)
+    
+    return render_template('result.html', url_root=request.url_root, title=title, included_terms=intersection, song=recommended_song)
+
+@app.route('/error?<string:msg>', methods=['GET'])
+def error(msg):
+    session.pop('title', None)
+    return render_template('error.html', message=msg)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=os.environ['PORT'])

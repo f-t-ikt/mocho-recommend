@@ -38,30 +38,11 @@
 
 <div class="container">
     <div class="page-header">
-        <h1>分析結果</h1>
+        <h1>エラー</h1>
     </div>
-    <div>
-        <p class="lead">あなたっぽい麻倉ももさんの曲は…</p>
-        <h2><span style="color:#fff; background-color:#f99">『{{ song.title }}』</span></h2>
-        <p class="lead">です！</p>
-    </div>
-    
-    <div>
-        <div class="lead">以下の単語が含まれています.</div>
-        {% for term in included_terms %}
-        {{ term }} &nbsp;
-        {% endfor %}
-    </div>
+    <p>{{ message }}</p>
     
     <br>
-    <br>
-    
-    <div>
-        <div>↓ 結果をツイートしよう！</div>
-        <a href="https://twitter.com/intent/tweet?text=あなたっぽい麻倉ももさんの曲は『{{ title }}』です！&hashtags=mocho_recommend&url={{ url_root }}" class="twitter-share-button" data-show-count="false" data-size="large">Tweet</a>
-        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-    </div>
-    
     <br>
     
     <p class="lead"><a href="/">戻る</a></p>
