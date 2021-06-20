@@ -6,7 +6,8 @@ from flask_bootstrap import Bootstrap
 import tweepy
 from tweepy import TweepError
 from database import read_data
-from similarity import get_terms_in_tweets, get_most_similar_song
+from similarity import get_most_similar_song
+from tweet import get_terms_in_tweets
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
