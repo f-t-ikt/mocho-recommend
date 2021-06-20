@@ -48,20 +48,35 @@
     
     <div>
         <div class="lead">以下の単語が含まれています.</div>
-        {% for term in included_terms %}
-        {{ term }} &nbsp;
-        {% endfor %}
+        <div class="well">    
+            {% for term in included_terms %}
+            {{ term }} &nbsp;
+            {% endfor %}
+        </div>
     </div>
     
     <br>
-    <br>
     
-    <div>
-        <div>↓ 結果をツイートしよう！</div>
-        <a href="https://twitter.com/intent/tweet?text=あなたっぽい麻倉ももさんの曲は『{{ title }}』です！&hashtags=mocho_recommend&url={{ url_root }}" class="twitter-share-button" data-show-count="false" data-size="large">Tweet</a>
+    <div class="lead">
+        結果をツイートしよう！
+        <a href="https://twitter.com/intent/tweet?text=あなたっぽい麻倉ももさんの曲は『{{ song.title }}』です！&hashtags=mocho_recommend&url={{ url_root }}" class="twitter-share-button" data-show-count="false" data-size="large">Tweet</a>
         <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     </div>
     
+    <br>
+    
+    <div id="service-link">
+        <div class="page-header">
+            <h3>サブスクリプションサービスで聴く</h3>
+        </div>
+        <ul>
+            <li><a href="{{ song.apple }}">Apple Music</a></li>
+            <li><a href="{{ song.spotify }}">Spotify</a></li>
+            <li><a href="{{ song.line }}">LINE MUSIC</a></li>
+            <li><a href="{{ song.awa }}">AWA</a></li>
+            <li><a href="{{ song.kkbox }}">KKBOX</a></li>
+        </ul>
+    </div>
     <br>
     
     <p class="lead"><a href="/">戻る</a></p>

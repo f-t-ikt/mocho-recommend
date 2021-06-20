@@ -46,7 +46,7 @@ def get_terms_in_tweets(api):
     tweets_set = set(tweets_parsed.split())
     return tweets_set
 
-def get_most_similar_title(api, tweets_set, songs_data):
+def get_most_similar_song(api, tweets_set, songs_data):
     lyrics_list = [song.lyrics for song in songs_data]
     similarity = calc_similarity(tweets_set, lyrics_list)
     max_index = similarity.index(max(similarity))

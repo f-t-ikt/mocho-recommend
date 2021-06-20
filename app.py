@@ -1,3 +1,4 @@
+from datetime import timedelta
 from logging import getLogger, StreamHandler, DEBUG
 import os
 from flask import Flask, session, redirect, render_template, request, url_for
@@ -5,7 +6,7 @@ from flask_bootstrap import Bootstrap
 import tweepy
 from tweepy import TweepError
 from database import read_data
-from similarity import get_terms_in_tweets, get_most_similar_title
+from similarity import get_terms_in_tweets, get_most_similar_song
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -25,7 +26,7 @@ CALLBACK_URL = os.environ['CALLBACK_URL']
 songs_data = read_data()
 
 @app.before_request
-def delete_title_data():
+def delete_analyzed_data():
     if request.path == url_for('result') or request.path.startswith('/static/'):
         return
     session.pop('recommended_index', None)
@@ -61,6 +62,9 @@ def result():
         included_terms = session['included_terms']
         return render_template('result.html', url_root=request.url_root, song=recommended_song, included_terms=included_terms)
     
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(minutes=5)
+    
     token = session.pop('request_token', None)
     verifier = session.pop('verifier', None)
     if token is None or verifier is None:
@@ -85,15 +89,14 @@ def result():
     if len(terms_in_tweets) == 0:
         return redirect(url_for('error', msg='ツイートが不足しています.'))
     
-    max_index = get_most_similar_title(api, terms_in_tweets, songs_data)
+    max_index = get_most_similar_song(api, terms_in_tweets, songs_data)
     session['recommended_index'] = max_index
     recommended_song = songs_data[max_index]
-    title = recommended_song.title
     lyrics_set = set(recommended_song.lyrics.split())
     intersection = terms_in_tweets & lyrics_set
     session['included_terms'] = list(intersection)
     
-    return render_template('result.html', url_root=request.url_root, title=title, included_terms=intersection, song=recommended_song)
+    return render_template('result.html', url_root=request.url_root, song=recommended_song, included_terms=intersection)
 
 @app.route('/error?<string:msg>', methods=['GET'])
 def error(msg):
