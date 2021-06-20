@@ -1,13 +1,16 @@
 {% extends "bootstrap/base.html" %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('.static', filename='css/additional.css') }}")></link>
+{% endblock %}
+
 {% block title %}
 分析結果
 {% endblock %}
 
-{% block content %}
-<link rel="stylesheet" href="/static/css/additional.css"></link>
-
-<nav class="navbar navbar-default navbar-fixed-top">
+{% block navbar %}
+<div class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topnavbar">
@@ -16,7 +19,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">mocho-recommend</a>
+            <a class="navbar-brand" href="/">mocho-recommend</a>
         </div>
         
         <div class="collapse navbar-collapse" id="topnavbar">
@@ -27,12 +30,14 @@
             </ul>
         </div>
     </div>
-</nav>
+</div>
+{% endblock %}
 
+{% block content %}
 <div class="jumbotron">
     <div class="container">
         <h1>mocho-recommend</h1>
-        <p><h3>6/25/2021<span style="color:#fff; background-color:#f99"> 麻倉ももさん </span> お誕生日おめでとうございます！</h3></p>
+        <p><h3>6/25/2021 <span class="img-rounded" style="color:#fff; background-color:#f99">麻倉ももさん</span> お誕生日おめでとうございます！</h3></p>
     </div>
 </div>
 
@@ -42,7 +47,7 @@
     </div>
     <div>
         <p class="lead">あなたっぽい麻倉ももさんの曲は…</p>
-        <h2><span style="color:#fff; background-color:#f99">『{{ song.title }}』</span></h2>
+        <h2><span class="img-rounded" style="color:#fff; background-color:#f99">『{{ song.title }}』</span></h2>
         <p class="lead">です！</p>
     </div>
     
