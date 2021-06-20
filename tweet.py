@@ -1,5 +1,6 @@
 import tweepy
 from tweepy import TweepError
+from parser import parse
 
 def get_tweets(api):
     tweets = []

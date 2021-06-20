@@ -1,5 +1,3 @@
-from parser import parse
-
 def calc_simpson_coefficient(x, y):
     x_size, y_size = len(x), len(y)
     intersection = x & y
