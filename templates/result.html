@@ -75,11 +75,12 @@
             <h3>サブスクリプションサービスで聴く</h3>
         </div>
         <ul>
-            <li><a href="{{ song.apple }}">Apple Music</a></li>
-            <li><a href="{{ song.spotify }}">Spotify</a></li>
-            <li><a href="{{ song.line }}">LINE MUSIC</a></li>
-            <li><a href="{{ song.awa }}">AWA</a></li>
-            <li><a href="{{ song.kkbox }}">KKBOX</a></li>
+            {% if song.apple %}<li><a href="{{ song.apple }}">Apple Music</a></li>{% endif %}
+            {% if song.spotify %}<li><a href="{{ song.spotify }}">Spotify</a></li>{% endif %}
+            {% if song.line %}<li><a href="{{ song.line }}">LINE MUSIC</a></li>{% endif %}
+            {% if song.awa %}<li><a href="{{ song.awa }}">AWA</a></li>{% endif %}
+            {% if song.kkbox %}<li><a href="{{ song.kkbox }}">KKBOX</a></li>{% endif %}
+            {% if song.amazon %}<li><a href="{{ song.amazon }}">Amazon Music</a></li>{% endif %}
         </ul>
     </div>
     <br>
