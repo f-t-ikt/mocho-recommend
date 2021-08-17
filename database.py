@@ -6,7 +6,7 @@ def read_data():
     database_url = os.environ['DATABASE_URL']
     conn = psycopg2.connect(database_url)
     cur = conn.cursor()
-    cur.execute("SELECT * FROM data ORDER BY id");
+    cur.execute("SELECT id, title, lyrics, apple, spotify, line, awa, kkbox, amazon FROM data ORDER BY id")
     data = []
     for record in cur:
         song = Song(*record)
